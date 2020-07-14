@@ -54,4 +54,6 @@ function onConnected() {
   sender.emit("write_regs", modbusUDP, 1, [11, 22, 33]);
 }
 
-exports.demo = connect;
+module.exports = {
+  demo: connect,
+};
