@@ -1,6 +1,7 @@
 function main() {
   var ModbusRTU = require("modbus-serial");
   var modbusTCP = new ModbusRTU();
+  modbusTCP.isDebugEnabled = true;
 
   modbusTCP
     .connectTCP("192.168.88.148", { port: 502 })
@@ -8,6 +9,10 @@ function main() {
       info = "Connected, wait for reading...";
       console.log(info);
 
+      if (!modbusTCP.isOpen) {
+        console.log("client not opened, now close");
+        modbusTCP.close();
+      }
 
       modbusTCP.setID(1);
 
@@ -26,7 +31,7 @@ function main() {
       .readHoldingRegisters(0, 5)
       .then(function (data) {
         mbsStatus = "success";
-        console.log(data.buffer);
+        console.log(data);
         modbusTCP.close();
       })
       .catch(function (e) {

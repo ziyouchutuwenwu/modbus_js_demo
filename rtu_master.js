@@ -1,6 +1,7 @@
 function main() {
   var ModbusRTU = require("modbus-serial");
   var modbusRTU = new ModbusRTU();
+  modbusRTU.isDebugEnabled = true;
 
   modbusRTU
     .connectRTUBuffered("/dev/ttyUSB0", {
@@ -12,6 +13,11 @@ function main() {
     .then(function () {
       info = "Connected, wait for reading...";
       console.log(info);
+
+      if (!modbusRTU.isOpen) {
+        console.log("client not opened, now close");
+        modbusRTU.close();
+      }
 
       modbusRTU.setID(1);
 
@@ -30,7 +36,7 @@ function main() {
       .readHoldingRegisters(0, 5)
       .then(function (data) {
         mbsStatus = "success";
-        console.log(data.buffer);
+        console.log(data);
         modbusRTU.close();
       })
       .catch(function (e) {
