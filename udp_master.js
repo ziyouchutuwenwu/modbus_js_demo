@@ -1,43 +1,57 @@
-function main() {
-  var ModbusRTU = require("modbus-serial");
-  var modbusUDP = new ModbusRTU();
-  modbusUDP.isDebugEnabled = true;
+var ModbusRTU = require("modbus-serial");
+var modbusUDP = new ModbusRTU();
+modbusUDP.isDebugEnabled = true;
 
+const sender = require("./modbus_sender").bus;
+var isReconnected = false;
+
+function connect() {
   modbusUDP
-    .connectUDP("192.168.88.148", { port: 502 })
+    .connectTCP("192.168.88.148", { port: 502 })
     .then(function () {
-      info = "Connected, wait for reading...";
-      console.log(info);
-
-      if (!modbusUDP.isOpen) {
-        console.log("client not opened, now close");
-        modbusUDP.close();
+      if (!isReconnected) {
+        isReconnected = true;
+        onConnected();
       }
-
-      modbusUDP.setID(1);
-
-      // 从0号地址写入11 22 33 44 55
-      // modbusRTU.writeRegisters(0, [11, 22, 33, 44, 55]).then(readModbusData);
-      modbusUDP
-        .writeRegisters(0, [333, 444, 555, 111, 222])
-        .then(readModbusData);
     })
     .catch(function (e) {
-      console.log("exception on connect");
+      console.log("connect failed");
     });
-
-  var readModbusData = function () {
-    modbusUDP
-      .readHoldingRegisters(0, 5)
-      .then(function (data) {
-        mbsStatus = "success";
-        console.log(data);
-        modbusUDP.close();
-      })
-      .catch(function (e) {
-        console.log("exception on reading, ", e);
-      });
-  };
 }
 
-exports.demo = main;
+function readDemo() {
+  modbusUDP
+    .readHoldingRegisters(0, 10)
+    .then(function (data) {
+      mbsStatus = "success";
+      console.log("readHoldingRegisters", data);
+    })
+    .catch(function (e) {
+      console.log("readHoldingRegisters error, ", e);
+    });
+}
+
+function onLoopRead() {
+  if (!modbusUDP.isOpen) {
+    connect();
+  } else {
+    readDemo();
+  }
+}
+
+function onConnected() {
+  info = "Connected, wait for reading...";
+  console.log(info);
+
+  if (!modbusUDP.isOpen) {
+    console.log("client not opened, now will exit");
+    modbusUDP.close();
+  }
+
+  modbusUDP.setID(1);
+  setInterval(onLoopRead, 1000);
+
+  sender.emit("write_regs", modbusUDP, 1, [11, 22, 33]);
+}
+
+exports.demo = connect;

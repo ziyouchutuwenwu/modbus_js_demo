@@ -7,3 +7,10 @@
 - 8.0.1 版以后，出来的可以看到原始数据
 - <https://github.com/yaacov/node-modbus-serial/pull/349>
 - <https://github.com/yaacov/node-modbus-serial/issues/344>
+
+## 依赖库
+
+```bash
+npm install node-modbus-serial
+npm install nanobus
+```

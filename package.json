@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "modbus-serial": "^8.0.0"
+    "modbus-serial": "^8.0.0",
+    "nanobus": "^4.4.0"
   }
 }
