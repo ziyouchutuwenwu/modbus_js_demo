@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "debug": "node tcp_slave.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "modbus-serial": "^8.0.0",
-    "nanobus": "^4.4.0"
+    "nanobus": "^4.4.0",
+    "nodbus-plus": "^0.8.2"
   }
 }

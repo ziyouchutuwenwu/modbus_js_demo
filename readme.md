@@ -11,6 +11,10 @@
 ## 依赖库
 
 ```bash
+模拟主站
 npm install node-modbus-serial
 npm install nanobus
+
+模拟从站, 暂时只支持tcp，udp和串口不支持
+npm install nodbus-plus
 ```
