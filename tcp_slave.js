@@ -27,8 +27,18 @@ slave.on("closed", function () {
 
 // 收到指令
 slave.on("indication", function (adubuffer) {
-  console.log("Indication Recieved");
-  console.log(adubuffer);
+  if (adubuffer.length < 5) {
+    console.log("indication incomplete!")
+    return;
+  }
+
+  let content_size = adubuffer[5];
+  let content = adubuffer.slice(6, adubuffer.length);
+  if (content_size != content.length) {
+    console.log("indication buffer size check error");
+    return;
+  }
+  console.log("indication recieved ", content);
 });
 
 // 收到数据
